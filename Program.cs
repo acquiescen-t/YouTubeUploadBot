@@ -191,26 +191,25 @@ class Program
         using (StreamReader r = new StreamReader(PATH_TO_SECRETS + "/settings.json"))
         {
             string contents = r.ReadToEnd();
-            logger.Trace($"contents: {contents}");
 
             RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(contents, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy HH:mm:ss"} );
 
-            logger.Info($"nextUploadDateTime:   {rootObject.programSettings.nextUploadDateTime}");
-            logger.Info($"rank:                 {rootObject.programSettings.rank}");
-            logger.Info($"intervalHours:        {rootObject.programSettings.intervalHours}");
-            logger.Info($"pathToUploadFolder:   {rootObject.programSettings.pathToUploadFolder}{Environment.NewLine}");
+            logger.Trace($"nextUploadDateTime:   {rootObject.programSettings.nextUploadDateTime}");
+            logger.Trace($"rank:                 {rootObject.programSettings.rank}");
+            logger.Trace($"intervalHours:        {rootObject.programSettings.intervalHours}");
+            logger.Trace($"pathToUploadFolder:   {rootObject.programSettings.pathToUploadFolder}{Environment.NewLine}");
 
-            logger.Info("--JESKAI SETTINGS--");
-            logger.Info($"uploadedFolder:       {rootObject.jeskaiSettings.uploadedFolder}");
-            logger.Info($"thumbnailFolder:      {rootObject.jeskaiSettings.thumbnailFolder}");
-            logger.Info($"deckList:             {rootObject.jeskaiSettings.deckList}");
-            logger.Info($"deckTech:             {rootObject.jeskaiSettings.deckTech}{Environment.NewLine}");
+            logger.Trace("--JESKAI SETTINGS--");
+            logger.Trace($"uploadedFolder:       {rootObject.jeskaiSettings.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {rootObject.jeskaiSettings.thumbnailFolder}");
+            logger.Trace($"deckList:             {rootObject.jeskaiSettings.deckList}");
+            logger.Trace($"deckTech:             {rootObject.jeskaiSettings.deckTech}{Environment.NewLine}");
 
-            logger.Info("--GRIXIS SETTINGS--");
-            logger.Info($"uploadedFolder:       {rootObject.grixisSettings.uploadedFolder}");
-            logger.Info($"thumbnailFolder:      {rootObject.grixisSettings.thumbnailFolder}");
-            logger.Info($"deckList:             {rootObject.grixisSettings.deckList}");
-            logger.Info($"deckTech:             {rootObject.grixisSettings.deckTech}{Environment.NewLine}");
+            logger.Trace("--GRIXIS SETTINGS--");
+            logger.Trace($"uploadedFolder:       {rootObject.grixisSettings.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {rootObject.grixisSettings.thumbnailFolder}");
+            logger.Trace($"deckList:             {rootObject.grixisSettings.deckList}");
+            logger.Trace($"deckTech:             {rootObject.grixisSettings.deckTech}{Environment.NewLine}");
             return rootObject;
         }
     }

@@ -4,6 +4,7 @@ G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.
 G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.AssemblyInfo.cs
 G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.csproj.CoreCompileInputs.cache
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\YouTubeUploadBot.exe
+G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\NLog.config
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\YouTubeUploadBot.deps.json
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\YouTubeUploadBot.runtimeconfig.json
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\YouTubeUploadBot.dll
@@ -13,6 +14,7 @@ G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.Auth.PlatformServices.
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.Auth.dll
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.Core.dll
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.Discovery.v1.dll
+G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.YouTube.v3.dll
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Newtonsoft.Json.dll
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\NLog.dll
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.csproj.AssemblyReference.cache
@@ -26,5 +28,3 @@ G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\refint\YouTubeUploadBot.dll
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.pdb
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.genruntimeconfig.cache
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\ref\YouTubeUploadBot.dll
-G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\NLog.config
-G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.YouTube.v3.dll
