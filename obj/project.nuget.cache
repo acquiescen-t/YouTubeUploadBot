@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "w11cBFVV3qbuhkZT2vUPB5hKhBNMsKX3CMAmWNdsTbkyy1GLIBakCsITPCdlGQglWOzNhf8Vf3LNssN/O7g2dA==",
+  "dgSpecHash": "VbQgbv2YDLxVcT9NysHct3nv/5hGRSiI0YsRYc/kQJOHnbV9KxFrbcQc7ikjOnpsZ50gRQ4vxHdyEvrIaIvbzg==",
   "success": true,
-  "projectFilePath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
+  "projectFilePath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\google.apis\\1.60.0\\google.apis.1.60.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\google.apis.auth\\1.60.0\\google.apis.auth.1.60.0.nupkg.sha512",

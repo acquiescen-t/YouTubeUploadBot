@@ -290,11 +290,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
+      "projectUniqueName": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
       "projectName": "YouTubeUploadBot",
-      "projectPath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
+      "projectPath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot\\obj\\",
+      "outputPath": "G:\\Projects\\YouTubeUploadBot\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
