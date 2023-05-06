@@ -16,6 +16,9 @@ class Program
     static Logger logger = LogManager.GetCurrentClassLogger();
     static string PATH_TO_SECRETS = "../../../secret";
 
+    static Settings settings;
+    static YouTubeService youTubeService;
+
     string videoID;
 
     static void Main(string[] args)
@@ -39,19 +42,17 @@ class Program
 
     private async Task BatchUploadVideos()
     {
-        #region Initialisation
-        var settings = Initialise();
+        Initialise();
         UserCredential cred = await GetCredentials();
-        YouTubeService youTubeService = new YouTubeService(new BaseClientService.Initializer()
+        youTubeService = new YouTubeService(new BaseClientService.Initializer()
         {
             HttpClientInitializer = cred,
             ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
         });
 
-        #endregion
-        await UploadVideos(settings, youTubeService);
+        await UploadVideos();
     }
-    private async Task UploadVideos(RootObject settings, YouTubeService youTubeService)
+    private async Task UploadVideos()
     {
         var filesToUpload = Directory.EnumerateFiles(settings.programSettings.pathToUploadFolder, "*", SearchOption.AllDirectories);
         int uploadCount = 0;
@@ -68,6 +69,7 @@ class Program
 
             #region Get Title & Description
             string folderName = Directory.GetParent(filePath).Name.Substring(2);
+            // 01 Jeskai Truths vs Grixis Midrange -> Jeskai Truths vs Grixis Midrange
 
             var pattern = @"(.*?) vs (.*)";
             var match = Regex.Match(folderName, pattern);
@@ -75,14 +77,14 @@ class Program
             string opponentsDeck = match.Groups[2].Value.Trim();
 
             string title = myDeck + " vs " + opponentsDeck + " | " + settings.programSettings.rank + " | MTG Historic";
-            string description = GetDescription(myDeck, opponentsDeck, settings);
+            string description = GetDescription(myDeck, opponentsDeck);
             logger.Info($"Title: {title}");
             logger.Info($"Description: {description}");
             #endregion
 
-            Video video = SetupVideo(title, description, settings);
-            bool videoSuccess = await UploadVideo(youTubeService, filePath, video);
-            bool thumbnailSuccess = await UploadThumbnail(youTubeService, myDeck, opponentsDeck, settings);
+            Video video = SetupVideo(title, description);
+            bool videoSuccess = await UploadVideo(filePath, video);
+            bool thumbnailSuccess = await UploadThumbnail(myDeck, opponentsDeck);
             if (videoSuccess && thumbnailSuccess)
             {
                 logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", settings.programSettings.nextUploadDateTime)}");
@@ -101,22 +103,22 @@ class Program
 
 
     // My Stuff: Folder manipulation within computer, updating nextUploadDateTime
-    private string CreateDestinationPath(string path)
+    private string CreateDestinationPath(string filePath)
     {
-        FileInfo destinationPath = new FileInfo(path);
-        logger.Trace($"Received parameter: {path}");
+        FileInfo destinationPath = new FileInfo(filePath);
+        logger.Trace($"Received parameter: {filePath}");
         // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange.mp4
 
-        string fileName = Path.GetFileName(path);
+        string fileName = Path.GetFileName(filePath);
         logger.Trace($"fileName: {fileName}");
         // Jund Midrange.mp4
 
-        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
         logger.Trace($"fileNameWithoutExtension: {fileNameWithoutExtension}");
         // Jund Midrange
 
         int start = 1;
-        string containingFolder = Directory.GetParent(path).FullName;
+        string containingFolder = Directory.GetParent(filePath).FullName;
         // G:\YouTube\MTG\footage\Grixis Truths\Uploaded
 
         string nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
@@ -187,31 +189,30 @@ class Program
     }
 
     // YouTube stuff: setting up of credentials and tokens, monitoring upload progress
-    private static RootObject Initialise()
+    private static void Initialise()
     {
         using (StreamReader r = new StreamReader(PATH_TO_SECRETS + "/settings.json"))
         {
             string contents = r.ReadToEnd();
 
-            RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(contents, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy HH:mm:ss"} );
+            settings = JsonConvert.DeserializeObject<Settings>(contents, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy HH:mm:ss"} );
 
-            logger.Trace($"nextUploadDateTime:   {rootObject.programSettings.nextUploadDateTime}");
-            logger.Trace($"rank:                 {rootObject.programSettings.rank}");
-            logger.Trace($"intervalHours:        {rootObject.programSettings.intervalHours}");
-            logger.Trace($"pathToUploadFolder:   {rootObject.programSettings.pathToUploadFolder}{Environment.NewLine}");
+            logger.Trace($"nextUploadDateTime:   {settings.programSettings.nextUploadDateTime}");
+            logger.Trace($"rank:                 {settings.programSettings.rank}");
+            logger.Trace($"intervalHours:        {settings.programSettings.intervalHours}");
+            logger.Trace($"pathToUploadFolder:   {settings.programSettings.pathToUploadFolder}{Environment.NewLine}");
 
             logger.Trace("--JESKAI SETTINGS--");
-            logger.Trace($"uploadedFolder:       {rootObject.jeskaiSettings.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {rootObject.jeskaiSettings.thumbnailFolder}");
-            logger.Trace($"deckList:             {rootObject.jeskaiSettings.deckList}");
-            logger.Trace($"deckTech:             {rootObject.jeskaiSettings.deckTech}{Environment.NewLine}");
+            logger.Trace($"uploadedFolder:       {settings.jeskaiSettings.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.jeskaiSettings.thumbnailFolder}");
+            logger.Trace($"deckList:             {settings.jeskaiSettings.deckList}");
+            logger.Trace($"deckTech:             {settings.jeskaiSettings.deckTech}{Environment.NewLine}");
 
             logger.Trace("--GRIXIS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {rootObject.grixisSettings.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {rootObject.grixisSettings.thumbnailFolder}");
-            logger.Trace($"deckList:             {rootObject.grixisSettings.deckList}");
-            logger.Trace($"deckTech:             {rootObject.grixisSettings.deckTech}{Environment.NewLine}");
-            return rootObject;
+            logger.Trace($"uploadedFolder:       {settings.grixisSettings.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.grixisSettings.thumbnailFolder}");
+            logger.Trace($"deckList:             {settings.grixisSettings.deckList}");
+            logger.Trace($"deckTech:             {settings.grixisSettings.deckTech}{Environment.NewLine}");
         }
     }
     private async Task<UserCredential> GetCredentials()
@@ -230,7 +231,7 @@ class Program
             return cred;
         }
     }
-    private Video SetupVideo(string title, string description, RootObject settings)
+    private Video SetupVideo(string title, string description)
     {
         var video = new Video();
 
@@ -263,14 +264,14 @@ class Program
         videoID = video.Id;
         logger.Info($"Video id {video.Id} was successfully uploaded!");
     }
-    private async Task<bool> UploadVideo(YouTubeService youtubeService, string filePath, Video video)
+    private async Task<bool> UploadVideo(string filePath, Video video)
     {
         try
         {
             using (var fileStream = new FileStream(filePath, FileMode.Open))
             {
                 logger.Trace("Uploading video...");
-                var videosInsertRequest = youtubeService.Videos.Insert(video, "snippet, status", fileStream, "video/*");
+                var videosInsertRequest = youTubeService.Videos.Insert(video, "snippet, status", fileStream, "video/*");
                 videosInsertRequest.ProgressChanged += ProgressChanged;
                 videosInsertRequest.ResponseReceived += ResponseReceived;
                 await videosInsertRequest.UploadAsync();
@@ -283,9 +284,9 @@ class Program
         }
         return true;
     }
-    private async Task<bool> UploadThumbnail(YouTubeService youtubeService, string myDeck, string opponentsDeck, RootObject settings)
+    private async Task<bool> UploadThumbnail(string myDeck, string opponentsDeck)
     {
-        string thumbnailPath = GetThumbnailPath(myDeck, opponentsDeck, settings);
+        string thumbnailPath = GetThumbnailPath(myDeck, opponentsDeck);
         if (!String.IsNullOrEmpty(thumbnailPath))
         {
             try
@@ -293,7 +294,7 @@ class Program
                 using (var thumbnailFileStream = new FileStream(thumbnailPath, FileMode.Open))
                 {
                     logger.Trace("Uploading thumbnail...");
-                    var thumbnailInsertRequest = youtubeService.Thumbnails.Set(videoID, thumbnailFileStream, "image/png");
+                    var thumbnailInsertRequest = youTubeService.Thumbnails.Set(videoID, thumbnailFileStream, "image/png");
                     thumbnailInsertRequest.ProgressChanged += ProgressChanged;
                     await thumbnailInsertRequest.UploadAsync();
                 }
@@ -308,7 +309,7 @@ class Program
     }
 
     // Getting information about video
-    private string GetDescription(string myDeck, string opponentsDeck, RootObject settings)
+    private string GetDescription(string myDeck, string opponentsDeck)
     {
         StringBuilder sb = new StringBuilder("Gameplay of ")
             .Append(myDeck).Append(" vs ").Append(opponentsDeck).Append("\n\n");
@@ -324,7 +325,7 @@ class Program
         }
         return sb.ToString();
     }
-    private string GetThumbnailPath(string myDeck, string opponentsDeck, RootObject settings)
+    private string GetThumbnailPath(string myDeck, string opponentsDeck)
     {
         string thumbnailFolder = String.Empty;
         switch(myDeck)

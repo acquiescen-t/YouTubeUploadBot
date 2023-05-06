@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YouTubeUploadBot.models
 {
-    public class RootObject
+    public class Settings
     {
         public ProgramSettings programSettings { get; set; }
         public JeskaiSettings jeskaiSettings { get; set; }
