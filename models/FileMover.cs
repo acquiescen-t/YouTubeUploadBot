@@ -90,7 +90,7 @@ namespace YouTubeUploadBot.models
                 case "Grixis Truths":
                     return settings.grixisSettings.uploadedFolder;
                 default:
-                    logger.Error($"{myDeck} has no settings configured!");
+                    logger.Warn($"{myDeck} has no settings configured!");
                     return String.Empty;
             }
         }
