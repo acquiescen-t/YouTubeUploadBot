@@ -12,6 +12,7 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.60.0" />
     <PackageReference Include="Google.Apis.Discovery.v1" Version="1.60.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.60.0.3043" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.1.4" />
     <PackageReference Include="NLog.Schema" Version="5.1.4" />

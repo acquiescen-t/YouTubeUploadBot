@@ -27,3 +27,4 @@ G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.pdb
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.genruntimeconfig.cache
 G:\Projects\YouTubeUploadBot\obj\Debug\net6.0\ref\YouTubeUploadBot.dll
 G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\NLog.config
+G:\Projects\YouTubeUploadBot\bin\Debug\net6.0\Google.Apis.YouTube.v3.dll
