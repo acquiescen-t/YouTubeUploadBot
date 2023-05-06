@@ -88,7 +88,7 @@ class Program
             if (videoSuccess && thumbnailSuccess)
             {
                 logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", settings.programSettings.nextUploadDateTime)}");
-                MoveUploadedFile(filePath, myDeck);
+                FileMover.MoveUploadedFile(settings, filePath, myDeck);
             }
             uploadCount++;
         }
@@ -98,95 +98,7 @@ class Program
             serializer.Formatting = Formatting.Indented;
             serializer.Serialize(sw, settings);
         }
-    }
-
-
-
-    // My Stuff: Folder manipulation within computer, updating nextUploadDateTime
-    private string CreateDestinationPath(string filePath)
-    {
-        FileInfo destinationPath = new FileInfo(filePath);
-        logger.Trace($"Received parameter: {filePath}");
-        // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange.mp4
-
-        string fileName = Path.GetFileName(filePath);
-        logger.Trace($"fileName: {fileName}");
-        // Jund Midrange.mp4
-
-        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
-        logger.Trace($"fileNameWithoutExtension: {fileNameWithoutExtension}");
-        // Jund Midrange
-
-        int start = 1;
-        string containingFolder = Directory.GetParent(filePath).FullName;
-        // G:\YouTube\MTG\footage\Grixis Truths\Uploaded
-
-        string nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
-        logger.Info($"Checking availability of: {nextAvailableDirectory}...");
-        // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange 01
-
-        while (Directory.Exists(nextAvailableDirectory))
-        {
-            logger.Trace($"Folder {nextAvailableDirectory} already exists!");
-            start++;
-            nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
-            // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange 02
-
-            logger.Trace($"Trying {nextAvailableDirectory}...");
-        }
-        Directory.CreateDirectory(nextAvailableDirectory);
-        logger.Info($"Created directory: {nextAvailableDirectory}");
-
-        nextAvailableDirectory = Path.Combine(nextAvailableDirectory, fileName);
-        logger.Trace($"Returning path: {nextAvailableDirectory}");
-        // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange 02\Jund Midrange.mp4
-
-        return nextAvailableDirectory;
-    }
-    private void MoveUploadedFile(string filePath, string myDeck)
-    {
-        try
-        {
-            FileInfo fileInfo = new FileInfo(filePath);
-            string destinationFolder = String.Empty;
-
-            // src: "G:\YouTube\MTG\footage\Upload From Here\01 Grixis Truths vs Jund Midrange\Jund Midrange.mp4"
-            // dst: "G:\YouTube\MTG\footage\Grixis Truths\Uploaded"
-
-            switch (myDeck)
-            {
-                case "Jeskai Truths":
-                    destinationFolder = @"G:\YouTube\MTG\footage\Jeskai Truths\Uploaded";
-                    break;
-                case "Grixis Truths":
-                    destinationFolder = @"G:\YouTube\MTG\footage\Grixis Truths\Uploaded";
-                    break;
-                case "Azorius Truths":
-                    destinationFolder = @"G:\YouTube\MTG\footage\Azorius Truths\Uploaded";
-                    break;
-                default:
-                    destinationFolder = @"G:\YouTube\MTG\footage\Put Uploaded Videos Here";
-                    break;
-            }
-
-            string srcPath = fileInfo.FullName;
-            logger.Trace($"srcPath: {srcPath}");
-            string dstPath = Path.Combine(destinationFolder, fileInfo.Name);
-            logger.Trace($"dstPath: {dstPath}");
-
-            dstPath = CreateDestinationPath(dstPath);
-            File.Copy(srcPath, dstPath, false);
-
-            File.Delete(srcPath);
-            Directory.Delete(Path.GetDirectoryName(srcPath));
-
-            logger.Info($"File has been moved from {srcPath} to {dstPath}. {Environment.NewLine}");
-        }
-        catch (Exception e)
-        {
-            logger.Error(e);
-        }
-    }
+    }   
 
     // YouTube stuff: setting up of credentials and tokens, monitoring upload progress
     private static void Initialise()
