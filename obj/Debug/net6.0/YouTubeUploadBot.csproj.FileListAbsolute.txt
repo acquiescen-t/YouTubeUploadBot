@@ -1,0 +1,5 @@
+G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.csproj.AssemblyReference.cache
+G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.GeneratedMSBuildEditorConfig.editorconfig
+G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.AssemblyInfoInputs.cache
+G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.AssemblyInfo.cs
+G:\Projects\YouTubeUploadBot\YouTubeUploadBot\obj\Debug\net6.0\YouTubeUploadBot.csproj.CoreCompileInputs.cache

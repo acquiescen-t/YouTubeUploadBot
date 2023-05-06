@@ -43,6 +43,36 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Google.Apis": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Core": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "Google.Apis.Discovery.v1": {
+              "target": "Package",
+              "version": "[1.60.0, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[5.1.4, )"
+            },
+            "NLog.Schema": {
+              "target": "Package",
+              "version": "[5.1.4, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

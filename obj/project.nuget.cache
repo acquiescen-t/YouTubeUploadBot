@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "s58RUQ1p/XwvbWlCJYIyNEj5+fwJi/E1JiN2PCKWeHk02UJ6TRvJB3ZQSyKOKINn3rytAKRP+MlnIHPbGdftRA==",
+  "dgSpecHash": "w11cBFVV3qbuhkZT2vUPB5hKhBNMsKX3CMAmWNdsTbkyy1GLIBakCsITPCdlGQglWOzNhf8Vf3LNssN/O7g2dA==",
   "success": true,
   "projectFilePath": "G:\\Projects\\YouTubeUploadBot\\YouTubeUploadBot\\YouTubeUploadBot.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\google.apis\\1.60.0\\google.apis.1.60.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\google.apis.auth\\1.60.0\\google.apis.auth.1.60.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\google.apis.core\\1.60.0\\google.apis.core.1.60.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\google.apis.discovery.v1\\1.60.0\\google.apis.discovery.v1.1.60.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\nlog\\5.1.4\\nlog.5.1.4.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\nlog.schema\\5.1.4\\nlog.schema.5.1.4.nupkg.sha512"
+  ],
   "logs": []
 }
