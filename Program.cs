@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NLog;
-using System.Runtime.Serialization;
+using System.Reflection;
 using YouTubeUploadBot.models;
 
 class Program
@@ -13,9 +16,7 @@ class Program
     {
         try
         {
-            Initialise();
-            Console.ReadKey();
-            // UploadVideos().Wait();
+            new Program().UploadVideos().Wait();
         }
         catch (AggregateException ex)
         {
@@ -34,8 +35,32 @@ class Program
     {
         #region Initialisation
         var settings = Initialise();
+        UserCredential cred = await GetCredentials();
+        YouTubeService youTubeService = new YouTubeService(new BaseClientService.Initializer()
+        {
+            HttpClientInitializer = cred,
+            ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
+        });
+
+        var filesToUpload = settings.programSettings.pathToUploadFolder;
         #endregion
-        Initialise();
+    }
+
+    private async Task<UserCredential> GetCredentials()
+    {
+        string pathToSecret = PATH_TO_SECRETS + "/client_secret.json";
+        logger.Trace($"pathToSecret: {pathToSecret}");
+        using (var stream = new FileStream(pathToSecret, FileMode.Open, FileAccess.Read))
+        {
+            var cred = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                GoogleClientSecrets.FromStream(stream).
+                    Secrets,
+                    new[] { YouTubeService.Scope.YoutubeUpload },
+                    "user",
+                    CancellationToken.None
+            );
+            return cred;
+        }
     }
 
     private static RootObject Initialise()

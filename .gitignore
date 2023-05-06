@@ -4,6 +4,9 @@
 secret/
 logs/
 
+*.v2
+*.vsidx
+
 # User-specific files
 *.suo
 *.user
