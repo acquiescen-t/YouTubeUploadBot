@@ -10,6 +10,8 @@ namespace YouTubeUploadBot.models
     {
         public string uploadedFolder { get; set; }
         public string thumbnailFolder { get; set; }
-        public string untappedLink { get; set; }
+
+        public string deckTech { get; set; }
+        public string deckList { get; set; }
     }
 }
