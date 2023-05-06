@@ -115,7 +115,7 @@ class Program
         // Jund Midrange
 
         int start = 1;
-        string containingFolder = Directory.GetParent(path).Name;
+        string containingFolder = Directory.GetParent(path).FullName;
         // G:\YouTube\MTG\footage\Grixis Truths\Uploaded
 
         string nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
