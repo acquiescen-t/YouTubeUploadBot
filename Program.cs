@@ -14,7 +14,7 @@ using YouTubeUploadBot.models;
 class Program
 {
     static Logger logger = LogManager.GetCurrentClassLogger();
-    static string PATH_TO_SECRETS = "../../../secret";
+    static string PATH_TO_SECRETS = @"G:\Projects\YouTubeUploadBot\secret";
 
     static Settings settings;
     static YouTubeService youTubeService;

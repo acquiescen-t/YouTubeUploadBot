@@ -56,9 +56,8 @@ namespace YouTubeUploadBot.models
             logger.Trace($"fileNameWithoutExtension: {fileNameWithoutExtension}");
 
             int start = 1;
-            string containingFolder = Directory.GetParent(filePath).FullName;
 
-            string nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
+            string nextAvailableDirectory = Path.Combine(destinationFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
             logger.Info($"Checking availability of: {nextAvailableDirectory}...");
             // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange 01
 
@@ -66,7 +65,7 @@ namespace YouTubeUploadBot.models
             {
                 logger.Trace($"Folder {nextAvailableDirectory} already exists!");
                 start++;
-                nextAvailableDirectory = Path.Combine(containingFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
+                nextAvailableDirectory = Path.Combine(destinationFolder, fileNameWithoutExtension + " " + start.ToString("D2"));
                 // G:\YouTube\MTG\footage\Grixis Truths\Uploaded\Jund Midrange 02
 
                 logger.Trace($"Trying {nextAvailableDirectory}...");
