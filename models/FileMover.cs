@@ -85,9 +85,9 @@ namespace YouTubeUploadBot.models
             switch(myDeck)
             {
                 case "Jeskai Truths":
-                    return settings.jeskaiSettings.GetUploadedFolder;
+                    return settings.jeskaiTruths.GetUploadedFolder;
                 case "Grixis Truths":
-                    return settings.grixisSettings.GetUploadedFolder;
+                    return settings.grixisTruths.GetUploadedFolder;
                 default:
                     logger.Warn($"{myDeck} has no settings configured!");
                     return String.Empty;

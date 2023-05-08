@@ -115,16 +115,16 @@ class Program
             logger.Trace($"pathToUploadFolder:   {settings.programSettings.pathToUploadFolder}{Environment.NewLine}");
 
             logger.Trace("--JESKAI SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.jeskaiSettings.GetUploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.jeskaiSettings.GetThumbnailFolder}");
-            logger.Trace($"deckList:             {settings.jeskaiSettings.GetDeckList}");
-            logger.Trace($"deckTech:             {settings.jeskaiSettings.GetDeckTech}{Environment.NewLine}");
+            logger.Trace($"uploadedFolder:       {settings.jeskaiTruths.GetUploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.jeskaiTruths.GetThumbnailFolder}");
+            logger.Trace($"deckList:             {settings.jeskaiTruths.GetDeckList}");
+            logger.Trace($"deckTech:             {settings.jeskaiTruths.GetDeckTech}{Environment.NewLine}");
 
             logger.Trace("--GRIXIS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.grixisSettings.GetUploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.grixisSettings.GetThumbnailFolder}");
-            logger.Trace($"deckList:             {settings.grixisSettings.GetDeckList}");
-            logger.Trace($"deckTech:             {settings.grixisSettings.GetDeckTech}{Environment.NewLine}");
+            logger.Trace($"uploadedFolder:       {settings.grixisTruths.GetUploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.grixisTruths.GetThumbnailFolder}");
+            logger.Trace($"deckList:             {settings.grixisTruths.GetDeckList}");
+            logger.Trace($"deckTech:             {settings.grixisTruths.GetDeckTech}{Environment.NewLine}");
         }
     }
     private async Task<UserCredential> GetCredentials()
@@ -228,10 +228,10 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                sb.Append("Deck tech: ").Append(settings.jeskaiSettings.GetDeckTech).Append("\nDeck list: ").Append(settings.jeskaiSettings.GetDeckList);
+                sb.Append("Deck tech: ").Append(settings.jeskaiTruths.GetDeckTech).Append("\nDeck list: ").Append(settings.jeskaiTruths.GetDeckList);
                 break;
             case "Grixis Truths":
-                sb.Append("Deck tech: ").Append(settings.grixisSettings.GetDeckTech).Append("\nDeck list: ").Append(settings.grixisSettings.GetDeckList);
+                sb.Append("Deck tech: ").Append(settings.grixisTruths.GetDeckTech).Append("\nDeck list: ").Append(settings.grixisTruths.GetDeckList);
                 break;
         }
         return sb.ToString();
@@ -242,10 +242,10 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                thumbnailFolder = settings.jeskaiSettings.GetThumbnailFolder;
+                thumbnailFolder = settings.jeskaiTruths.GetThumbnailFolder;
                 break;
             case "Grixis Truths":
-                thumbnailFolder = settings.grixisSettings.GetThumbnailFolder;
+                thumbnailFolder = settings.grixisTruths.GetThumbnailFolder;
                 break;
         }
         var allThumbnails = Directory.EnumerateFiles(thumbnailFolder);
