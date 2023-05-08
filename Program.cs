@@ -115,16 +115,16 @@ class Program
             logger.Trace($"pathToUploadFolder:   {settings.programSettings.pathToUploadFolder}{Environment.NewLine}");
 
             logger.Trace("--JESKAI SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.jeskaiSettings.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.jeskaiSettings.thumbnailFolder}");
-            logger.Trace($"deckList:             {settings.jeskaiSettings.deckList}");
-            logger.Trace($"deckTech:             {settings.jeskaiSettings.deckTech}{Environment.NewLine}");
+            logger.Trace($"uploadedFolder:       {settings.jeskaiSettings.GetUploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.jeskaiSettings.GetThumbnailFolder}");
+            logger.Trace($"deckList:             {settings.jeskaiSettings.GetDeckList}");
+            logger.Trace($"deckTech:             {settings.jeskaiSettings.GetDeckTech}{Environment.NewLine}");
 
             logger.Trace("--GRIXIS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.grixisSettings.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.grixisSettings.thumbnailFolder}");
-            logger.Trace($"deckList:             {settings.grixisSettings.deckList}");
-            logger.Trace($"deckTech:             {settings.grixisSettings.deckTech}{Environment.NewLine}");
+            logger.Trace($"uploadedFolder:       {settings.grixisSettings.GetUploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.grixisSettings.GetThumbnailFolder}");
+            logger.Trace($"deckList:             {settings.grixisSettings.GetDeckList}");
+            logger.Trace($"deckTech:             {settings.grixisSettings.GetDeckTech}{Environment.NewLine}");
         }
     }
     private async Task<UserCredential> GetCredentials()
@@ -152,7 +152,6 @@ class Program
         video.Snippet.Description = description;
 
         video.Status = new VideoStatus();
-        video.Status.MadeForKids = false;
         settings.programSettings.nextUploadDateTime = settings.programSettings.nextUploadDateTime.AddHours(settings.programSettings.intervalHours);
         video.Status.PrivacyStatus = "private";
         video.Status.PublishAt = settings.programSettings.nextUploadDateTime;
@@ -229,10 +228,10 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                sb.Append("Deck tech: ").Append(settings.jeskaiSettings.deckTech).Append("\nDeck list: ").Append(settings.jeskaiSettings.deckList);
+                sb.Append("Deck tech: ").Append(settings.jeskaiSettings.GetDeckTech).Append("\nDeck list: ").Append(settings.jeskaiSettings.GetDeckList);
                 break;
             case "Grixis Truths":
-                sb.Append("Deck tech: ").Append(settings.grixisSettings.deckTech).Append("\nDeck list: ").Append(settings.grixisSettings.deckList);
+                sb.Append("Deck tech: ").Append(settings.grixisSettings.GetDeckTech).Append("\nDeck list: ").Append(settings.grixisSettings.GetDeckList);
                 break;
         }
         return sb.ToString();
@@ -243,10 +242,10 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                thumbnailFolder = settings.jeskaiSettings.thumbnailFolder;
+                thumbnailFolder = settings.jeskaiSettings.GetThumbnailFolder;
                 break;
             case "Grixis Truths":
-                thumbnailFolder = settings.grixisSettings.thumbnailFolder;
+                thumbnailFolder = settings.grixisSettings.GetThumbnailFolder;
                 break;
         }
         var allThumbnails = Directory.EnumerateFiles(thumbnailFolder);

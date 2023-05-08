@@ -9,8 +9,8 @@ namespace YouTubeUploadBot.models
     public class Settings
     {
         public ProgramSettings programSettings { get; set; }
-        public JeskaiSettings jeskaiSettings { get; set; }
-        public GrixisSettings grixisSettings { get; set; }
+        public JeskaiTruths jeskaiSettings { get; set; }
+        public GrixisTruths grixisSettings { get; set; }
 
     }
 }

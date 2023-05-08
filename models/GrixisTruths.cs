@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YouTubeUploadBot.models
 {
-    public class JeskaiSettings : Deck
+    public class GrixisTruths : DeckSettings
     {
     }
 }
