@@ -11,6 +11,7 @@ namespace YouTubeUploadBot.models
         public ProgramSettings programSettings { get; set; }
         public JeskaiTruths jeskaiTruths { get; set; }
         public GrixisTruths grixisTruths { get; set; }
+        public BantYorion bantYorion { get; set; }
 
     }
 }

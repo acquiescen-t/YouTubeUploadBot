@@ -40,6 +40,8 @@ class Program
         }
     }
 
+    // TODO: Implement polymorphism
+
     private async Task BatchUploadVideos()
     {
         Initialise();
@@ -76,6 +78,22 @@ class Program
             string myDeck = match.Groups[1].Value.Trim();
             string opponentsDeck = match.Groups[2].Value.Trim();
 
+            Deck currentDeck = null;
+            switch (myDeck)
+            {
+                case "Grixis Truths":
+                    currentDeck = new GrixisTruths();
+                    break;
+                case "Jeskai Truths":
+                    currentDeck = new JeskaiTruths();
+                    break;
+                case "Bant Yorion":
+                    currentDeck = new BantYorion();
+                    break;
+                default:
+                    continue;
+            }
+
             string title = myDeck + " vs " + opponentsDeck + " | " + settings.programSettings.rank + " | MTG Historic";
             string description = GetDescription(myDeck, opponentsDeck);
             logger.Info($"Title: {title}");
@@ -88,7 +106,8 @@ class Program
             if (videoSuccess && thumbnailSuccess)
             {
                 logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", settings.programSettings.nextUploadDateTime)}");
-                FileMover.MoveUploadedFile(settings, filePath, myDeck);
+                //FileMover.MoveUploadedFile(settings, filePath, myDeck);
+                FileMover.MoveUploadedFileNew(settings, filePath, currentDeck);
             }
             uploadCount++;
         }
@@ -114,17 +133,23 @@ class Program
             logger.Trace($"intervalHours:        {settings.programSettings.intervalHours}");
             logger.Trace($"pathToUploadFolder:   {settings.programSettings.pathToUploadFolder}{Environment.NewLine}");
 
-            logger.Trace("--JESKAI SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.jeskaiTruths.GetUploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.jeskaiTruths.GetThumbnailFolder}");
-            logger.Trace($"deckList:             {settings.jeskaiTruths.GetDeckList}");
-            logger.Trace($"deckTech:             {settings.jeskaiTruths.GetDeckTech}{Environment.NewLine}");
+            logger.Trace("--JESKAI TRUTHS SETTINGS--");
+            logger.Trace($"uploadedFolder:       {settings.jeskaiTruths.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.jeskaiTruths.thumbnailFolder}");
+            logger.Trace($"deckList:             {settings.jeskaiTruths.deckList}");
+            logger.Trace($"deckTech:             {settings.jeskaiTruths.deckTech}{Environment.NewLine}");
 
-            logger.Trace("--GRIXIS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.grixisTruths.GetUploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.grixisTruths.GetThumbnailFolder}");
-            logger.Trace($"deckList:             {settings.grixisTruths.GetDeckList}");
-            logger.Trace($"deckTech:             {settings.grixisTruths.GetDeckTech}{Environment.NewLine}");
+            logger.Trace("--GRIXIS TRUTHS SETTINGS--");
+            logger.Trace($"uploadedFolder:       {settings.grixisTruths.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.grixisTruths.thumbnailFolder}");
+            logger.Trace($"deckList:             {settings.grixisTruths.deckList}");
+            logger.Trace($"deckTech:             {settings.grixisTruths.deckTech}{Environment.NewLine}");
+
+            logger.Trace("--BANT YORION SETTINGS--");
+            logger.Trace($"uploadedFolder:       {settings.bantYorion.uploadedFolder}");
+            logger.Trace($"thumbnailFolder:      {settings.bantYorion.thumbnailFolder}");
+            logger.Trace($"deckList:             {settings.bantYorion.deckList}");
+            logger.Trace($"deckTech:             {settings.bantYorion.deckTech}{Environment.NewLine}");
         }
     }
     private async Task<UserCredential> GetCredentials()
@@ -208,6 +233,7 @@ class Program
                     var thumbnailInsertRequest = youTubeService.Thumbnails.Set(videoID, thumbnailFileStream, "image/png");
                     thumbnailInsertRequest.ProgressChanged += ProgressChanged;
                     await thumbnailInsertRequest.UploadAsync();
+                    return true;
                 }
             }
             catch (Exception e)
@@ -216,7 +242,7 @@ class Program
                 return false;
             }
         }
-        return true;
+        return false;
     }
 
     // Getting information about video
@@ -228,10 +254,13 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                sb.Append("Deck tech: ").Append(settings.jeskaiTruths.GetDeckTech).Append("\nDeck list: ").Append(settings.jeskaiTruths.GetDeckList);
+                sb.Append("Deck tech: ").Append(settings.jeskaiTruths.deckTech).Append("\nDeck list: ").Append(settings.jeskaiTruths.deckList);
                 break;
             case "Grixis Truths":
-                sb.Append("Deck tech: ").Append(settings.grixisTruths.GetDeckTech).Append("\nDeck list: ").Append(settings.grixisTruths.GetDeckList);
+                sb.Append("Deck tech: ").Append(settings.grixisTruths.deckTech).Append("\nDeck list: ").Append(settings.grixisTruths.deckList);
+                break;
+            case "Bant Yorion":
+                sb.Append("Deck tech: ").Append(settings.bantYorion.deckTech).Append("\nDeck list: ").Append(settings.bantYorion.deckList);
                 break;
         }
         return sb.ToString();
@@ -242,11 +271,17 @@ class Program
         switch(myDeck)
         {
             case "Jeskai Truths":
-                thumbnailFolder = settings.jeskaiTruths.GetThumbnailFolder;
+                thumbnailFolder = settings.jeskaiTruths.thumbnailFolder;
                 break;
             case "Grixis Truths":
-                thumbnailFolder = settings.grixisTruths.GetThumbnailFolder;
+                thumbnailFolder = settings.grixisTruths.thumbnailFolder;
                 break;
+            case "Bant Yorion":
+                thumbnailFolder = settings.bantYorion.thumbnailFolder;
+                break;
+            default:
+                logger.Warn($"No thumbnail path for {myDeck}!");
+                return thumbnailFolder;
         }
         var allThumbnails = Directory.EnumerateFiles(thumbnailFolder);
         List<string> matchingThumbnails = new List<string>();
