@@ -13,18 +13,20 @@ using YouTubeUploadBot.models;
 
 class Program
 {
+    static Boolean TEST = false;
+
     static Logger logger = LogManager.GetCurrentClassLogger();
     static string PATH_TO_SECRETS = @"G:\Projects\YouTubeUploadBot\secret";
 
-    static Settings settings;
+    static ProgramSettings programSettings;
     static YouTubeService youTubeService;
-
     string videoID;
 
     static void Main(string[] args)
     {
         try
         {
+            logger.Info($"TEST: {TEST}");
             new Program().BatchUploadVideos().Wait();
         }
         catch (AggregateException ex)
@@ -45,18 +47,22 @@ class Program
     private async Task BatchUploadVideos()
     {
         Initialise();
-        UserCredential cred = await GetCredentials();
-        youTubeService = new YouTubeService(new BaseClientService.Initializer()
+
+        if (!TEST)
         {
-            HttpClientInitializer = cred,
-            ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
-        });
+            UserCredential cred = await GetCredentials();
+            youTubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = cred,
+                ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
+            });
+        }
 
         await UploadVideos();
     }
     private async Task UploadVideos()
     {
-        var filesToUpload = Directory.EnumerateFiles(settings.programSettings.pathToUploadFolder, "*", SearchOption.AllDirectories);
+        var filesToUpload = Directory.EnumerateFiles(programSettings.pathToUploadFolder, "*", SearchOption.AllDirectories);
         int uploadCount = 0;
 
         foreach(var filePath in filesToUpload)
@@ -67,11 +73,12 @@ class Program
                 break;
             }
 
+            logger.Trace("-------------------------------------------------------------------------------------------------------------");
             logger.Trace($"Currently working on: {filePath}");
 
             #region Get Title & Description
             string folderName = Directory.GetParent(filePath).Name.Substring(2);
-            // 01 Jeskai Truths vs Grixis Midrange -> Jeskai Truths vs Grixis Midrange
+            logger.Trace($"Trimmed folderName: {folderName}");
 
             var pattern = @"(.*?) vs (.*)";
             var match = Regex.Match(folderName, pattern);
@@ -93,21 +100,22 @@ class Program
                 default:
                     continue;
             }
+            logger.Trace($"currentDeck.deckName: {currentDeck.deckName}{Environment.NewLine}");
 
-            string title = myDeck + " vs " + opponentsDeck + " | " + settings.programSettings.rank + " | MTG Historic";
-            string description = GetDescription(myDeck, opponentsDeck);
+            string title = myDeck + " vs " + opponentsDeck + " | " + programSettings.rank + " | MTG Historic";
             logger.Info($"Title: {title}");
-            logger.Info($"Description: {description}");
+
+            string description = GetDescription(currentDeck, opponentsDeck);
+            logger.Info($"Description: {description.Replace("\n", "[NEWLINE]")}{Environment.NewLine}");
             #endregion
 
             Video video = SetupVideo(title, description);
             bool videoSuccess = await UploadVideo(filePath, video);
-            bool thumbnailSuccess = await UploadThumbnail(myDeck, opponentsDeck);
+            bool thumbnailSuccess = await UploadThumbnail(currentDeck, opponentsDeck);
             if (videoSuccess && thumbnailSuccess)
             {
-                logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", settings.programSettings.nextUploadDateTime)}");
-                //FileMover.MoveUploadedFile(settings, filePath, myDeck);
-                FileMover.MoveUploadedFileNew(settings, filePath, currentDeck);
+                logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", programSettings.nextUploadDateTime)} {Environment.NewLine}");
+                FileMover.MoveUploadedFile(filePath, currentDeck, TEST);
             }
             uploadCount++;
         }
@@ -115,7 +123,7 @@ class Program
         {
             JsonSerializer serializer = new JsonSerializer();
             serializer.Formatting = Formatting.Indented;
-            serializer.Serialize(sw, settings);
+            serializer.Serialize(sw, programSettings);
         }
     }   
 
@@ -126,30 +134,12 @@ class Program
         {
             string contents = r.ReadToEnd();
 
-            settings = JsonConvert.DeserializeObject<Settings>(contents, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy HH:mm:ss"} );
+            programSettings = JsonConvert.DeserializeObject<ProgramSettings>(contents, new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy HH:mm:ss"} );
 
-            logger.Trace($"nextUploadDateTime:   {settings.programSettings.nextUploadDateTime}");
-            logger.Trace($"rank:                 {settings.programSettings.rank}");
-            logger.Trace($"intervalHours:        {settings.programSettings.intervalHours}");
-            logger.Trace($"pathToUploadFolder:   {settings.programSettings.pathToUploadFolder}{Environment.NewLine}");
-
-            logger.Trace("--JESKAI TRUTHS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.jeskaiTruths.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.jeskaiTruths.thumbnailFolder}");
-            logger.Trace($"deckList:             {settings.jeskaiTruths.deckList}");
-            logger.Trace($"deckTech:             {settings.jeskaiTruths.deckTech}{Environment.NewLine}");
-
-            logger.Trace("--GRIXIS TRUTHS SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.grixisTruths.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.grixisTruths.thumbnailFolder}");
-            logger.Trace($"deckList:             {settings.grixisTruths.deckList}");
-            logger.Trace($"deckTech:             {settings.grixisTruths.deckTech}{Environment.NewLine}");
-
-            logger.Trace("--BANT YORION SETTINGS--");
-            logger.Trace($"uploadedFolder:       {settings.bantYorion.uploadedFolder}");
-            logger.Trace($"thumbnailFolder:      {settings.bantYorion.thumbnailFolder}");
-            logger.Trace($"deckList:             {settings.bantYorion.deckList}");
-            logger.Trace($"deckTech:             {settings.bantYorion.deckTech}{Environment.NewLine}");
+            logger.Trace($"nextUploadDateTime:   {programSettings.nextUploadDateTime}");
+            logger.Trace($"rank:                 {programSettings.rank}");
+            logger.Trace($"intervalHours:        {programSettings.intervalHours}");
+            logger.Trace($"pathToUploadFolder:   {programSettings.pathToUploadFolder}{Environment.NewLine}");
         }
     }
     private async Task<UserCredential> GetCredentials()
@@ -177,9 +167,9 @@ class Program
         video.Snippet.Description = description;
 
         video.Status = new VideoStatus();
-        settings.programSettings.nextUploadDateTime = settings.programSettings.nextUploadDateTime.AddHours(settings.programSettings.intervalHours);
+        programSettings.nextUploadDateTime = programSettings.nextUploadDateTime.AddHours(programSettings.intervalHours);
         video.Status.PrivacyStatus = "private";
-        video.Status.PublishAt = settings.programSettings.nextUploadDateTime;
+        video.Status.PublishAt = programSettings.nextUploadDateTime;
 
         return video;
     }
@@ -204,13 +194,16 @@ class Program
     {
         try
         {
-            using (var fileStream = new FileStream(filePath, FileMode.Open))
+            if (!TEST)
             {
-                logger.Trace("Uploading video...");
-                var videosInsertRequest = youTubeService.Videos.Insert(video, "snippet, status", fileStream, "video/*");
-                videosInsertRequest.ProgressChanged += ProgressChanged;
-                videosInsertRequest.ResponseReceived += ResponseReceived;
-                await videosInsertRequest.UploadAsync();
+                using (var fileStream = new FileStream(filePath, FileMode.Open))
+                {
+                    logger.Trace("Uploading video...");
+                    var videosInsertRequest = youTubeService.Videos.Insert(video, "snippet, status", fileStream, "video/*");
+                    videosInsertRequest.ProgressChanged += ProgressChanged;
+                    videosInsertRequest.ResponseReceived += ResponseReceived;
+                    await videosInsertRequest.UploadAsync();
+                }
             }
         }
         catch (Exception e)
@@ -220,9 +213,14 @@ class Program
         }
         return true;
     }
-    private async Task<bool> UploadThumbnail(string myDeck, string opponentsDeck)
+    private async Task<bool> UploadThumbnail(Deck myDeck, string opponentsDeck)
     {
         string thumbnailPath = GetThumbnailPath(myDeck, opponentsDeck);
+        logger.Trace($"Thumbnail path: {thumbnailPath}");
+
+        if (TEST)
+            return true;
+
         if (!String.IsNullOrEmpty(thumbnailPath))
         {
             try
@@ -246,45 +244,20 @@ class Program
     }
 
     // Getting information about video
-    private string GetDescription(string myDeck, string opponentsDeck)
+    private string GetDescription(Deck myDeck, string opponentsDeck)
     {
         StringBuilder sb = new StringBuilder("Gameplay of ")
-            .Append(myDeck).Append(" vs ").Append(opponentsDeck).Append("\n\n");
-
-        switch(myDeck)
-        {
-            case "Jeskai Truths":
-                sb.Append("Deck tech: ").Append(settings.jeskaiTruths.deckTech).Append("\nDeck list: ").Append(settings.jeskaiTruths.deckList);
-                break;
-            case "Grixis Truths":
-                sb.Append("Deck tech: ").Append(settings.grixisTruths.deckTech).Append("\nDeck list: ").Append(settings.grixisTruths.deckList);
-                break;
-            case "Bant Yorion":
-                sb.Append("Deck tech: ").Append(settings.bantYorion.deckTech).Append("\nDeck list: ").Append(settings.bantYorion.deckList);
-                break;
-        }
+            .Append(myDeck.deckName).Append(" vs ").Append(opponentsDeck).Append("\n\n")
+            .Append("Deck tech: ").Append(myDeck.deckTech).Append("\nDeck list: ").Append(myDeck.deckList);
         return sb.ToString();
     }
-    private string GetThumbnailPath(string myDeck, string opponentsDeck)
+    private string GetThumbnailPath(Deck myDeck, string opponentsDeck)
     {
-        string thumbnailFolder = String.Empty;
-        switch(myDeck)
-        {
-            case "Jeskai Truths":
-                thumbnailFolder = settings.jeskaiTruths.thumbnailFolder;
-                break;
-            case "Grixis Truths":
-                thumbnailFolder = settings.grixisTruths.thumbnailFolder;
-                break;
-            case "Bant Yorion":
-                thumbnailFolder = settings.bantYorion.thumbnailFolder;
-                break;
-            default:
-                logger.Warn($"No thumbnail path for {myDeck}!");
-                return thumbnailFolder;
-        }
+        string thumbnailFolder = myDeck.thumbnailFolder;
+
         var allThumbnails = Directory.EnumerateFiles(thumbnailFolder);
         List<string> matchingThumbnails = new List<string>();
+
         foreach (var thumbnail in allThumbnails)
             if (thumbnail.Contains(opponentsDeck))
                 matchingThumbnails.Add(thumbnail);
@@ -294,6 +267,7 @@ class Program
             logger.Warn($"No thumbnail found for {opponentsDeck}! Create one and upload manually.");
             return String.Empty;
         }
+
         return matchingThumbnails[new Random().Next(0, matchingThumbnails.Count)];
     }
 }
