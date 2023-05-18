@@ -94,8 +94,8 @@ class Program
                 case "Jeskai Truths":
                     currentDeck = new JeskaiTruths();
                     break;
-                case "Bant Yorion":
-                    currentDeck = new BantYorion();
+                case "5C Ramp":
+                    currentDeck = new ChromaticRamp();
                     break;
                 default:
                     continue;
