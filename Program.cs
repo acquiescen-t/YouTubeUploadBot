@@ -253,6 +253,9 @@ class Program
     }
     private string GetThumbnailPath(Deck myDeck, string opponentsDeck)
     {
+        logger.Trace($"myDeck: {myDeck}");
+        logger.Trace($"opponentsDeck: {opponentsDeck}");
+
         string thumbnailFolder = myDeck.thumbnailFolder;
 
         var allThumbnails = Directory.EnumerateFiles(thumbnailFolder);
