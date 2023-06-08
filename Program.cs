@@ -94,6 +94,9 @@ class Program
                 case "Jeskai Truths":
                     currentDeck = new JeskaiTruths();
                     break;
+                case "Azorius Truths":
+                    currentDeck = new AzoriusTruths();
+                    break;
                 case "5C Ramp":
                     currentDeck = new ChromaticRamp();
                     break;
@@ -112,7 +115,7 @@ class Program
             Video video = SetupVideo(title, description);
             bool videoSuccess = await UploadVideo(filePath, video);
             bool thumbnailSuccess = await UploadThumbnail(currentDeck, opponentsDeck);
-            if (videoSuccess && thumbnailSuccess)
+            if (videoSuccess)
             {
                 logger.Info($"Video uploaded successsfully and set to go live at {String.Format("{0:f}", programSettings.nextUploadDateTime)} {Environment.NewLine}");
                 FileMover.MoveUploadedFile(filePath, currentDeck, TEST);
